@@ -1,44 +1,42 @@
 package com.bit.accelerometer;
 
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class ListActivity extends AppCompatActivity {
-    protected TextView xL;
-    protected Calendar calendar;
-    protected SQLiteDatabase SQLiteDBase;
-    protected DatabaseHelper DBHelper;
-//    protected SQLiteList
-
+    protected DatabaseManager dbManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        xL = findViewById(R.id.xV);
-
         ListView lLine = (ListView)findViewById(R.id.logLine);
-//
-//        SimpleDateFormat cTime = new SimpleDateFormat("dd-MM-yyyy");
-//        String TimeStr = cTime.format(calendar.getTime()).toString();
-//
-
-
         ArrayList<String> arrayList = new ArrayList<>();
-//        arrayList.add("x=" + MainActivity.xV + ", y=" + MainActivity.yV + ", z=" + MainActivity.zV);
+
+        dbManager = new DatabaseManager(this);
+        try {
+            dbManager.open();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Cursor cursor = dbManager.viewAll();
+
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                arrayList.add("ID " + cursor.getString(0) + "\nSensor X = " + cursor.getString(1) + "\nSensor Y = " + cursor.getString(2) + "\nSensor Z = " + cursor.getString(3) + ",\nTime " + cursor.getString(4));
+            }
+        } else {
+            arrayList.add("Empty");
+        }
+
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
         lLine.setAdapter(arrayAdapter);
-
     }
 }

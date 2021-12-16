@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.sql.SQLDataException;
 
 public class DatabaseManager {
-    private DatabaseHelper dbHelper;
+    private DatabaseHelper dbHelper, dbRHelper;
     private Context context;
     private SQLiteDatabase database;
 
@@ -18,7 +18,6 @@ public class DatabaseManager {
 
    public DatabaseManager open() throws SQLDataException {
         dbHelper = new DatabaseHelper(context);
-        database = dbHelper.getWritableDatabase();
         return this;
    }
 
@@ -27,12 +26,22 @@ public class DatabaseManager {
    }
 
    public void insert(String x, String y, String z) {
+       database = dbHelper.getWritableDatabase();
+
        ContentValues contentValues = new ContentValues();
        contentValues.put(dbHelper.SENSOR_X, x);
        contentValues.put(dbHelper.SENSOR_Y, y);
        contentValues.put(dbHelper.SENSOR_Z, z);
 
        database.insert(dbHelper.TABLE_NAME, null, contentValues);
-//       database.execSQL("insert into " + DatabaseHelper.TABLE_NAME + " (sensor_x, sensor_y, sensor_z) values ('" + x + "','" + y + "','" + z + "');");
+   }
+
+   public Cursor viewAll() {
+       database = dbHelper.getReadableDatabase();
+
+       String query = "select * from " + dbRHelper.TABLE_NAME;
+       Cursor cursor = database.rawQuery(query, null);
+
+       return cursor;
    }
 }

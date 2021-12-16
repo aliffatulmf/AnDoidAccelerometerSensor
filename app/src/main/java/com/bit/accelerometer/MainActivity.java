@@ -38,15 +38,15 @@ public class MainActivity extends AppCompatActivity {
     protected DatabaseManager dbManager;
     protected DatabaseHelper dbHelper;
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        SM.unregisterListener(acmListener);
-//        sV.setText("Suspended!");
-//
-//        startButton = (Button)findViewById(R.id.btnStart);
-//        startButton.setText("Resume");
-//    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SM.unregisterListener(acmListener);
+        sV.setText("Suspended!");
+
+        startButton = (Button)findViewById(R.id.btnStart);
+        startButton.setText("Resume");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         zV = findViewById(R.id.zV);
         sV = findViewById(R.id.status);
 
-//        dbHelper = new DatabaseHelper(this);
         dbManager = new DatabaseManager(this);
         try {
             dbManager.open();
@@ -112,10 +111,6 @@ public class MainActivity extends AppCompatActivity {
     private SensorEventListener acmListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-            gX = event.values[0];
-            gY = event.values[1];
-            gZ = event.values[2];
-
             String sX = String.valueOf(event.values[0]);
             String sY = String.valueOf(event.values[1]);
             String sZ = String.valueOf(event.values[2]);
